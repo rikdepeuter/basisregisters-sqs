@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v3.0.1...v4.0.0) (2025-04-09)
+
+
+### Code Refactoring
+
+* use renovate and nuget + update pipeline ([bc234ab](https://github.com/informatievlaanderen/basisregisters-sqs/commit/bc234ababaaea4c4bf01ed4dea44caa9c43bd090))
+
+
+### BREAKING CHANGES
+
+* update to dotnet 9
+
 ## [3.0.1](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v3.0.0...v3.0.1) (2024-03-25)
 
 # [3.0.0](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v2.1.3...v3.0.0) (2024-03-14)
