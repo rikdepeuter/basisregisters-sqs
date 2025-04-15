@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.0.0...v4.0.1) (2025-04-15)
+
+
+### Bug Fixes
+
+* make provenance data nullable ([7585863](https://github.com/informatievlaanderen/basisregisters-sqs/commit/7585863cb8c6091f3b55aeffcbb57ebf4ee71474))
+
 # [4.0.0](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v3.0.1...v4.0.0) (2025-04-09)
 
 
