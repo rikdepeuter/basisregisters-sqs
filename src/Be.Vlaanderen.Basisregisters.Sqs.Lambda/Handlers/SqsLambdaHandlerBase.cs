@@ -1,5 +1,6 @@
 ﻿namespace Be.Vlaanderen.Basisregisters.Sqs.Lambda.Handlers;
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ public abstract class SqsLambdaHandlerBase<TSqsLambdaRequest> : IRequestHandler<
                 ? new TicketError(exception.Errors.Single().ErrorMessage, exception.Errors.Single().ErrorCode)
                 : new TicketError(exception.Errors.Select(error => new TicketError(error.ErrorMessage, error.ErrorCode)).ToList());
         }
+
         return null;
     }
 
@@ -66,32 +68,30 @@ public abstract class SqsLambdaHandlerBase<TSqsLambdaRequest> : IRequestHandler<
         {
             await HandleAggregateIdIsNotFoundException(request, cancellationToken);
         }
-        catch (IfMatchHeaderValueMismatchException)
+        catch (Exception exception)
         {
-            await TicketErrorAsync(new TicketError("Als de If-Match header niet overeenkomt met de laatste ETag.", "PreconditionFailed"), request, cancellationToken);
-        }
-        catch (ValidationException exception)
-        {
-            var ticketError = MapValidationException(exception, request);
-            ticketError ??= new TicketError(exception.Message, "");
-
-            await TicketErrorAsync(ticketError, request, cancellationToken);
-        }
-        catch (DomainException exception)
-        {
-            var ticketError = MapDomainException(exception, request);
-            ticketError ??= new TicketError(exception.Message, "");
-
-            await TicketErrorAsync(ticketError, request, cancellationToken);
+            var ticketError = TryConvertToTicketError(exception, request);
+            await Ticketing.Error(
+                request.TicketId,
+                ticketError,
+                cancellationToken);
         }
     }
 
-    private async Task TicketErrorAsync(TicketError ticketError, TSqsLambdaRequest request, CancellationToken cancellationToken)
+    protected TicketError TryConvertToTicketError(Exception exception, TSqsLambdaRequest request)
     {
-        await Ticketing.Error(
-            request.TicketId,
-            ticketError,
-            cancellationToken);
+        return exception switch
+        {
+            IfMatchHeaderValueMismatchException =>
+                new TicketError("Als de If-Match header niet overeenkomt met de laatste ETag.", "PreconditionFailed"),
+            ValidationException validationException =>
+                MapValidationException(validationException, request)
+                ?? new TicketError(exception.Message, ""),
+            DomainException domainException =>
+                MapDomainException(domainException, request)
+                ?? new TicketError(exception.Message, ""),
+            _ => throw exception
+        };
     }
 
     protected abstract Task HandleAggregateIdIsNotFoundException(TSqsLambdaRequest request, CancellationToken cancellationToken);
