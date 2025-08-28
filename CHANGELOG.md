@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.1.0...v4.1.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* make exception to TicketError re-usable ([8b3782d](https://github.com/informatievlaanderen/basisregisters-sqs/commit/8b3782d1fecca9911042eab321e5c11f20a7a581))
+
 # [4.1.0](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.0.1...v4.1.0) (2025-08-28)
 
 
