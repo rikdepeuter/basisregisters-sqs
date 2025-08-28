@@ -1,5 +1,6 @@
 namespace Be.Vlaanderen.Basisregisters.Sqs.Handlers;
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,8 +44,11 @@ public abstract class SqsHandler<TSqsRequest> : IRequestHandler<TSqsRequest, Loc
             throw new AggregateIdIsNotFoundException();
         }
 
-        var ticketId = await _ticketing.CreateTicket(WithTicketMetadata(aggregateId, request), cancellationToken);
-        request.TicketId = ticketId;
+        if (request.TicketId == Guid.Empty)
+        {
+            var ticketId = await _ticketing.CreateTicket(WithTicketMetadata(aggregateId, request), cancellationToken);
+            request.TicketId = ticketId;
+        }
 
         _ = await _sqsQueue.Copy(request, new SqsQueueOptions(aggregateId), cancellationToken);
 
