@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.0.1...v4.1.0) (2025-08-28)
+
+
+### Features
+
+* optionally create a ticket ([243c7b7](https://github.com/informatievlaanderen/basisregisters-sqs/commit/243c7b7a62e480f2ad5b6104e5eca2b33ab27620))
+
 ## [4.0.1](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.0.0...v4.0.1) (2025-04-15)
 
 
