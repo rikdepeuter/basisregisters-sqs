@@ -1,3 +1,11 @@
+# [4.2.0](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.1.1...v4.2.0) (2025-12-17)
+
+
+### Features
+
+* add TicketingBehavior to control Pending/Complete being called ([39e8f5f](https://github.com/informatievlaanderen/basisregisters-sqs/commit/39e8f5f905add9805fb964b217288df98f749ed8))
+* add TicketingBehavior to control Pending/Complete being called ([9ba3162](https://github.com/informatievlaanderen/basisregisters-sqs/commit/9ba3162521c98735f71eb057da87e4ef7814fa02))
+
 ## [4.1.1](https://github.com/informatievlaanderen/basisregisters-sqs/compare/v4.1.0...v4.1.1) (2025-08-28)
 
 
