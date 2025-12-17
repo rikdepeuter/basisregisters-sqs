@@ -18,16 +18,19 @@ public abstract class SqsLambdaHandlerBase<TSqsLambdaRequest> : IRequestHandler<
 {
     protected readonly ICustomRetryPolicy RetryPolicy;
     protected readonly ITicketing Ticketing;
+    private readonly TicketingBehavior _ticketingBehavior;
 
     protected IIdempotentCommandHandler IdempotentCommandHandler { get; }
 
     protected SqsLambdaHandlerBase(
         ICustomRetryPolicy retryPolicy,
         ITicketing ticketing,
-        IIdempotentCommandHandler idempotentCommandHandler)
+        IIdempotentCommandHandler idempotentCommandHandler,
+        TicketingBehavior ticketingBehavior = TicketingBehavior.All)
     {
         RetryPolicy = retryPolicy;
         Ticketing = ticketing;
+        _ticketingBehavior = ticketingBehavior;
         IdempotentCommandHandler = idempotentCommandHandler;
     }
 
@@ -53,16 +56,22 @@ public abstract class SqsLambdaHandlerBase<TSqsLambdaRequest> : IRequestHandler<
         {
             await ValidateIfMatchHeaderValue(request, cancellationToken);
 
-            await Ticketing.Pending(request.TicketId, cancellationToken);
+            if ((_ticketingBehavior & TicketingBehavior.Pending) != 0)
+            {
+                await Ticketing.Pending(request.TicketId, cancellationToken);
+            }
 
             object? innerHandleResult = null;
 
             await RetryPolicy.Retry(async () => innerHandleResult = await InnerHandle(request, cancellationToken));
 
-            await Ticketing.Complete(
-                request.TicketId,
-                new TicketResult(innerHandleResult),
-                cancellationToken);
+            if ((_ticketingBehavior & TicketingBehavior.Complete) != 0)
+            {
+                await Ticketing.Complete(
+                    request.TicketId,
+                    new TicketResult(innerHandleResult),
+                    cancellationToken);
+            }
         }
         catch (AggregateIdIsNotFoundException)
         {
